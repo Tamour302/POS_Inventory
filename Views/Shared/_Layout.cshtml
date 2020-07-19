@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="~/logo (1).ico" type="image/x-icon" />
+    <link rel="icon" href="~/logo (1).ico" type="image/ico" />
+    <title>@ViewData["Title"] - Fruit_Vegetable_POS</title>
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <style>
+
+        .btn.btn-rounded-40.dash-btn-pm {
+            background-color: #e0e0e0;
+        }
+        .navbar-inverse {
+            padding: 0.5%;
+            color: black;
+            background-color: white !important;
+            border-color: white !important;
+            border: 2px solid black !important;
+        }
+            .navbar-inverse .navbar-nav > li > a {
+                color: black !important;
+            }
+                .navbar-inverse .navbar-nav > li > a:hover, .navbar-inverse .navbar-nav > li > a:focus {
+                    color: #ffffff;
+                    background-color: #2b27276b;
+                }
+        .icon-bar {
+        background-color:black;
+        color:white;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" asp-area="" href="/Customer/Index">
+                    <img src="~/images/full-image.png" style="
+                width: 80px;
+                height: 60px;margin-top: -25%;" />
+                </a>            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    @if(User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="/Customer/Index">Dealers</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="/FoodItem/Index">Food Items</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="/Sales/GetBillList">Overall Sales</a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" href="/Reports/Index">Reports</a>
+                            </li>
+                        }
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+        </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

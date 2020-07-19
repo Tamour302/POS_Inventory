@@ -1,0 +1,30 @@
+﻿@model IEnumerable<POS_Inventory.Models.InventoryViewModel>
+@{
+    ViewData["Title"] = "Get Overall Sale Report";
+
+}
+
+<h1>Overall Sale Report</h1>
+<table class="table table-bordered">
+    <tr>
+        <th>Type</th>
+        <th>Name</th>
+        <th>Quantity</th>
+        <th>Price</th>
+
+    </tr>
+
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>@item.Type</td>
+            <td>@item.ProductName</td>
+            <td>@item.Quantity</td>
+            <td>@item.Price</td>
+        </tr>
+
+
+    }
+</table>
+

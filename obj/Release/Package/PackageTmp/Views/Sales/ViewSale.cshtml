@@ -1,0 +1,110 @@
+﻿@model POS_Inventory.Models.CreateSaleViewModel
+
+@{
+    ViewData["Title"] = "Sale Detail Information";
+}
+
+<h4>Sale Detail Information</h4>
+<hr />
+<div class="row">
+
+    <div class="col-md-10">
+
+        @foreach (var item in ViewBag.Customers)
+        {
+            @if (item.Customer_Id == Model.Customer_Id)
+            {
+                <h5>Name: @item.Name</h5>
+                <h5>Phone Number: @item.Phone_Number</h5>
+             }
+         }
+        <h5>Created Date: @Model.Created_Date</h5>
+        @*<h5>Paid: @Model.Is_Paid</h5>*@
+    <br />
+    <br />
+    <table id="tblCustomers" cellpadding="0" cellspacing="0" class="table table-striped">
+        <tr>
+            <th style="width:100px" hidden>FoodItem Id</th>
+            <th style="width:150px">Name</th>
+            <th style="width:150px">Quantity</th>
+            <th style="width:150px">Rate</th>
+            <th style="width:150px">Amount</th>
+
+        </tr>
+
+        @foreach (var customer in Model.Sale_FoodItems)
+        {
+
+            <tr>
+                <td class="Name">
+                    <span>@customer.Name</span>
+
+                </td>
+
+                <td class="Quantity">
+                    <span>@customer.Quantity</span>
+                </td>
+                <td class="Rate">
+                    <span>@customer.Rate</span>
+                </td>
+                <td class="Amount">
+                    <span>@customer.Amount</span>
+                </td>
+
+            </tr>
+        }
+        <tr>
+            <td></td>
+            <td></td>
+            <td>Total Amount:</td>
+
+            <td>
+                <input name="Amount" class="form-control" id="TotalAmount" readonly onchange="CalculateRemainingAmount()" />
+            </td>
+            
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td>Remaining Amount:</td>
+
+            <td>
+                <input class="form-control" id="RemainingAmount" name="Remaining_Amount" readonly />
+            </td>
+           
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td>Grand Total:</td>
+
+            <td>
+                <input class="form-control" id="Grand_Total" readonly name="Grand_Total" />
+            </td>
+            
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td>Amount Pay:</td>
+
+            <td>
+                <input name="Amount_Pay" class="form-control" id="AmountPaid" onchange="CalculateRemainingAmount()" />
+            </td>
+      
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td>Left Amount:</td>
+
+            <td>
+                <input name="Left_Amount" class="form-control" id="LeftAmount" readonly />
+            </td>
+            
+        </tr>
+    
+
+    </table>
+</div>
+    </div>

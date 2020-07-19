@@ -1,0 +1,65 @@
+﻿@model POS_Inventory.Models.FoodItem
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>FoodItem</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <div class="form-group">
+
+                    <label class="control-label">Name</label>
+                    @Html.TextBoxFor(m => m.Name, new { @class = "form-control", @required = "required" })
+
+                    <span asp-validation-for="Name" class="text-danger"></span>
+                </div>
+                
+            </div>
+            @*<div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="Is_Active" /> @Html.DisplayNameFor(model => model.Is_Active)
+                    </label>
+                </div>
+                <div class="form-group form-check">
+                    <label class="form-check-label">
+                        <input class="form-check-input" asp-for="Is_Deleted" /> @Html.DisplayNameFor(model => model.Is_Deleted)
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Created_Date" class="control-label"></label>
+                    <input asp-for="Created_Date" class="form-control" />
+                    <span asp-validation-for="Created_Date" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Modified_Date" class="control-label"></label>
+                    <input asp-for="Modified_Date" class="form-control" />
+                    <span asp-validation-for="Modified_Date" class="text-danger"></span>
+                </div>*@
+        <div class="form-group">
+            <label class="control-label">Food Category</label>
+            @Html.EnumDropDownListFor(
+            x => x.FoodCategory,
+            "Select My Type",
+            new { @class = "form-control" ,@required="required"})
+            @*<label asp-for="FoodCategory" class="control-label"></label>
+            <select asp-for="FoodCategory" class="form-control" asp-items="Html.GetEnumSelectList<FoodItemCategories>()"></select>*@
+            <span asp-validation-for="FoodCategory" class="text-danger"></span>
+        </div>
+            <br/>
+            <br/>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a href="/FoodItem/Index">Back to List</a>
+</div>

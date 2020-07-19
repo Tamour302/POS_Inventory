@@ -1,0 +1,80 @@
+﻿@model POS_Inventory.Models.LoginViewModel
+    @{
+        Layout = "";
+        ViewData["Title"] = "Log in";
+    }
+
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="shortcut icon" href="~/logo(1).ico" type="image/x-icon" />
+    <link rel="icon" href="~/logo(1).ico" type="image/ico" />
+    <title>@ViewData["Title"] - POS_Inventory</title>
+
+    <script src="~/lib/jquery/jquery.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+    <style>
+        input#Input_Emai, input#Input_Passwordl {
+            /*width: 60% !important;*/
+        }
+
+        body {
+            overflow-y: hidden !important;
+        }
+
+        button.btn.btn-light {
+            padding: 2%;
+            width: 28%;
+        }
+    </style>
+
+    <div class="container">
+     
+            <div class="row">
+                <div class="col-sm-6 col-md-6 col-lg-6" style="background-repeat: no-repeat;
+    background-image: url(/images/full-image.png);
+    margin-top: 10%;
+    height: 93%;">
+
+                </div>
+                <div class="col-sm-6 col-md-6 col-lg-6" style=" padding-bottom: 9%;
+        background-repeat: no-repeat;
+        background-image: url(/images/cover.jpg);
+        padding-top: 9%;">
+                    <h1>@ViewData["Title"]</h1>
+                    <section>
+                        <form id="account" method="post">
+
+                            <div asp-validation-summary="All" class="text-danger"></div>
+                            <div class="form-group">
+                                <label>Email</label>
+                                @Html.TextBoxFor(m=>m.Email,new { @class= "form-control",@required="required",type="Email" })
+                                @*<input asp-for="Email" class="form-control" />*@
+                                <span asp-validation-for="Input.Email" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label>Password</label>
+                                @Html.TextBoxFor(m => m.Password, new { @class = "form-control", @required = "required", type = "Password" })
+
+                                @*<input asp-for="Input.Password" class="form-control" />*@
+                                <span asp-validation-for="Input.Password" class="text-danger"></span>
+                            </div>
+                            <div class="checkbox">
+                                <label for="RememberMe">
+                                    <input type="checkbox" data-val="true" data-val-required="The Remember me? field is required." id="RememberMe" name="RememberMe" value="true">
+                                    Remember me?
+                                </label>
+                            </div>
+                  
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-light">Log in</button>
+                            </div>
+                            <br /> <br /> <br /> <br /> <br />
+                          
+                        </form>
+                    </section>
+                </div>
+            </div>
+      
+    </div>

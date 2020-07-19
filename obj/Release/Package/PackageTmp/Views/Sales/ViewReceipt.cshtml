@@ -1,0 +1,144 @@
+﻿@model POS_Inventory.Models.BillInfoViewModel
+
+@{
+    ViewData["Title"] = "View Receipt";
+}
+    <h5>Name: @Model.Customer.Name</h5>
+    <h5>
+        Phone Number: @Model.Customer.Phone_Number</h5>
+                      @*<h5>
+                          Paid: @Model.Is_Paid</h5>*@
+                                <h5>
+                                    Created Date: @Model.Created_Date</h5>
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>
+                                                    Name
+                                                </th>
+                                                <th>
+                                                    Category
+                                                </th>
+                                                <th>
+                                                    Quantity
+                                                </th>
+                                                <th>
+                                                    Rate
+                                                </th>
+                                                <th>
+                                                    Created Date
+                                                </th>
+                                                <th>
+                                                    Amount
+                                                </th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var item in Model.Sale_Products)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.Name)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.Category)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.Quantity)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.Rate)
+                                                    </td>
+
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.Created_Date)
+                                                    </td>
+                                                    <td>
+                                                        @Html.DisplayFor(modelItem => item.Amount)
+                                                    </td>
+                                                </tr>
+                                            }
+                                            <tr>
+                                                <td>
+                                                </td>
+                                                <td>
+                                                </td>
+                                                <td>
+                                                </td>
+                                                <td>
+                                                </td>
+                                                <th>
+                                                    Total
+                                                </th>
+                                                <td>
+                                                    @Model.Amount
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                </td>
+                                                <td>
+                                                </td>
+                                                <td>
+                                                </td>
+                                                <td>
+                                                </td>
+                                                <th>
+                                                    Remaining Amount
+                                                </th>
+                                                <td>
+                                                    @Model.Remaining_Amount
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                </td>
+                                                <td>
+                                                </td>
+                                                <td>
+                                                </td>
+                                                <td>
+                                                </td>
+                                                <th>
+                                                    Grand Total
+                                                </th>
+                                                <td>
+                                                    @Model.Grand_Total
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                </td>
+                                                <td>
+                                                </td>
+                                                <td>
+                                                </td>
+                                                <td>
+                                                </td>
+                                                <th>
+                                                    Amount Paid
+                                                </th>
+                                                <td>
+                                                    @Model.Amount_Pay
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                </td>
+                                                <td>
+                                                </td>
+                                                <td>
+                                                </td>
+                                                <td>
+                                                </td>
+                                                <th>
+                                                   Left Amount
+                                                </th>
+                                                <td>
+                                                    @Model.Left_Amount
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <button class="btn-primary" onclick="window.print()">Print</button>

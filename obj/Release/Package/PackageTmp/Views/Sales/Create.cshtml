@@ -1,0 +1,509 @@
+﻿@model POS_Inventory.Models.CreateSaleViewModel
+
+@{
+    ViewData["Title"] = "Create Sale";
+}
+<style>
+    #tblCalculate td {
+        width: 20%;
+    }
+</style>
+<script src="~/lib/select2/js/select2.js"></script>
+<link href="~/lib/select2/css/select2.css" rel="stylesheet" />
+<h4>Create Sale</h4>
+<hr />
+<div class="row">
+
+    <div class="col-md-10">
+        @*<form>*@
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+
+        <div class="form-group">
+            <label name="Customer_Id" class="control-label">Customer Name</label>
+
+
+            @Html.DropDownListFor(m => m.Customer_Id, new SelectList(ViewBag.Customers, "Customer_Id", "Name"), new { @class = "form-control js-example-basic-single", @required = "required" })
+
+
+            <span asp-validation-for="Customer_Id" class="text-danger"></span>
+        </div>
+        <table id="tblCustomers" cellpadding="0" cellspacing="0" class="table table-striped">
+            <tr>
+                @*<th style="width:100px">FoodItem Id</th>*@
+                <th style="width:150px">Name</th>
+                <th style="width:150px">Quantity</th>
+                <th style="width:150px">Rate</th>
+                <th style="width:150px">Amount</th>
+                <th style="width:150px"></th>
+            </tr>
+            @foreach (var customer in Model.Sale_FoodItems)
+            {
+                <tr>
+                    @*<td class="FoodItemId">
+                            <span>@customer.Id</span>
+                        </td>*@
+                    <td class="Name">
+                        <span>@customer.Name</span>
+                        <input type="text" value="@customer.Name" style="display:none" />
+                    </td>
+
+                    <td class="Quantity">
+                        <span>@customer.Quantity</span>
+                        <input type="text" value="@customer.Quantity" style="display:none" />
+                    </td>
+                    <td class="Rate">
+                        <span>@customer.Rate</span>
+                        <input type="text" value="@customer.Rate" style="display:none" />
+                    </td>
+                    <td class="Amount">
+                        <span>@customer.Amount</span>
+                        <input type="text" value="@customer.Amount" style="display:none" />
+                    </td>
+                    <td>
+                        <a class="Edit" href="javascript:;">Edit</a>&nbsp |
+                        <a class="Update" href="javascript:;" style="display:none">Update</a>&nbsp |
+                        <a class="Cancel" href="javascript:;" style="display:none">Cancel</a>
+                        <a class="Delete" href="javascript:;">Delete</a>
+                    </td>
+                </tr>
+            }
+        </table>
+
+        <table border="0" cellpadding="0" cellspacing="0" id="EditTable" class="table table-striped">
+            <tr>
+                @*<td style="width: 150px">
+                        FoodItem Id<br />
+                        <input type="text" id="txtId" style="width:140px" />
+                    </td>*@
+                <td style="width: 150px">
+                    Name: <span style="color:red">*</span><br />
+                    @Html.DropDownList("Name", new SelectList(ViewBag.FoodItems, "Name", "Name"), new { @class = "form-control", @required = "required", @id = "txtName" })
+
+                    @*<input type="text" id="txtName" style="width:140px" />*@
+                </td>
+                <td style="width: 230px">
+                    Quantity: <span style="color:red">*</span><br />
+                    <input type="text" id="txtQuantity" style="width:140px" onchange="CalculateEditTblAmount()" value="1" />
+                </td>
+                <td style="width: 230px">
+                    Rate: <span style="color:red">*</span><br />
+                    <input type="text" id="txtRate" style="width:140px" onchange="CalculateEditTblAmount()" />
+                </td>
+                <td style="width: 230px">
+                    Amount: <span style="color:red">*</span><br />
+                    <input type="text" id="txtAmount" style="width:140px" readonly />
+                </td>
+                <td style="width: 230px">
+                    <br />
+                    <input type="button" id="btnAdd" value="Add" />
+                </td>
+            </tr>
+        </table>
+        <p id="response" style="display:none;color:red">Please enter details ,then press add button</p>
+
+        <table class="table table-striped" cellpadding="0" cellspacing="0" id="tblCalculate">
+            <tr>
+                <td></td>
+                <td></td>
+                <td>Total Amount:</td>
+
+                <td>
+                    <input name="Amount" class="form-control" id="TotalAmount" readonly onchange="CalculateRemainingAmount()" />
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>Remaining Amount:</td>
+
+                <td>
+                    <input class="form-control" id="RemainingAmount" name="Remaining_Amount" readonly />
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>Grand Total:</td>
+
+                <td>
+                    <input class="form-control" id="Grand_Total" readonly name="Grand_Total" />
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>Amount Pay:</td>
+
+                <td>
+                    <input name="Amount_Pay" class="form-control" id="AmountPaid" onchange="CalculateRemainingAmount()" />
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td></td>
+                <td>Left Amount:</td>
+
+                <td>
+                    <input name="Left_Amount" class="form-control" id="LeftAmount" readonly />
+                </td>
+                <td></td>
+            </tr>
+        </table>
+
+        <div class="form-group">
+            <input type="submit" value="Create" class="btn btn-primary" id="btnSubmit" />
+        </div>
+
+
+    </div>
+</div>
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+
+
+<script>
+    var Remaining_Amount = 0;
+    var counter = 0;
+    $(document).ready(function () {
+        $('.js-example-basic-single').select2();
+        $('select#txtName').select2();
+        $('.foodNames').select2();
+        Remaining_Amount = parseFloat($("#RemainingAmount").val());
+        $("#LeftAmount").val(Remaining_Amount);
+        CalculateRemainingAmount();
+    });
+    function CalculateEditTblAmount() {
+
+       $("#txtRate").val(isNaN(parseFloat($("#txtRate").val())) == true ? 1 : parseFloat($("#txtRate").val()));
+       $("#txtQuantity").val(isNaN(parseFloat($("#txtQuantity").val())) == true ? 1 : parseFloat($("#txtQuantity").val()));
+        var Edit_Rate = $("#txtRate").val();
+        var Edit_Quantity = $("#txtQuantity").val();
+        $("#txtAmount").val(Edit_Rate * Edit_Quantity);
+
+    }
+    $(function () {
+        //Remove the dummy row if data present.
+        if ($("#tblCustomers tr").length > 2) {
+            $("#tblCustomers tr:eq(1)").remove();
+        } else {
+            var row = $("#tblCustomers tr:last-child");
+            row.find(".Edit").hide();
+            row.find(".Delete").hide();
+            row.find("span").html('&nbsp;');
+            row.find("div").html('&nbsp;');
+        }
+    });
+    //Add event handler.
+    $("body").on("click", "#btnAdd", function () {
+        $('p#response').hide();
+
+        //var txtName = $("#txtName");
+        $(this).closest("tr").find('td');
+        var e = $(this).closest("tr").find("select#txtName")[0];
+
+        var txtName = e.options[e.selectedIndex].value;
+        var txtRate = $("#txtRate");
+        var txtQuantity = $("#txtQuantity");
+        var txtAmount = $("#txtAmount");
+        var txtId = $("#txtId");
+        if (txtName == "" || txtQuantity.val() == "" || txtRate.val() == "") {
+                    $('p#response').show()
+                }
+                else {
+                AppendRow(txtId.val(), txtName, txtQuantity.val(), txtRate.val(), txtAmount.val());
+                txtId.val("");
+                //txtName.val("");
+                txtRate.val("");
+                txtQuantity.val("");
+                txtAmount.val("");
+
+            }
+    });
+    function CalculateRemainingAmount() {
+
+        var TotalAmount = isNaN(parseFloat($('#TotalAmount').val())) == true ? 0 : parseFloat($('#TotalAmount').val());
+        var Amount_Paid = isNaN(parseFloat($('#AmountPaid').val())) == true ? 0 : parseFloat($('#AmountPaid').val());
+        var Grand_Total = isNaN(parseFloat($('#Grand_Total').val())) == true ? 0 : parseFloat($('#Grand_Total').val());
+        var Left_Amount = isNaN(parseFloat($('#LeftAmount').val())) == true ? 0 : parseFloat($('#LeftAmount').val());
+        //var Remaining_Amount = isNaN(parseFloat($("#RemainingAmount").val());
+        $('#Grand_Total').val(TotalAmount + Remaining_Amount);
+        Grand_Total = isNaN(parseFloat($('#Grand_Total').val())) == true ? 0 : parseFloat($('#Grand_Total').val());
+
+        $('#LeftAmount').val(Grand_Total - Amount_Paid);
+
+
+
+
+    }
+
+    function CalculateAmount() {
+        var table = document.getElementById("tblCustomers"), sumVal = 0;
+        if ((table.rows.length) > 0) {
+            for (var i = 1; i < table.rows.length; i++) {
+                sumVal = sumVal + parseInt(table.rows[i].cells[3].textContent);
+            }
+        }
+        $("#TotalAmount").val(sumVal);
+    }
+
+    function AppendRow(FoodItemId, Name, Quantity, Rate, Amount) {
+        if (Amount == "" || Amount == null) {
+            Amount = parseInt(Rate) * parseInt(Quantity);
+        }
+        counter++;
+        var selectDropDown = '<select class="form-control foodNames" id="txtName" name="Name" required="required"';
+        var array = @Html.Raw(Json.Encode(ViewBag.FoodItems));
+        for (var i = 0; i < array.length; i++) {
+
+            if (Name == array[i].name) {
+
+                selectDropDown  += '<option selected value ="' + array[i].name + '">' + array[i].name + "</option>";
+            }
+            else {
+                selectDropDown += '<option  value ="' + array[i].name + '">' + array[i].name + "</option>";
+            }
+
+        }
+        selectDropDown += "</select>";
+
+
+        var data = '<tr>' +
+            '<td class="Name"> <span>' + Name + '</span><div style="display:none">' + selectDropDown + '</div></td>' +
+            '<td class="Quantity"><span>' + Quantity + '</span> <input type="text" value="' + Quantity + '" style="display:none" onchange="getAmount(' + counter + ')" id="q-' + counter + '"/></td>' +
+            '<td class="Rate"><span>' + Rate + '</span><input type="text" value="' + Rate + '" style="display:none" id="r-' + counter + '" onchange="getAmount(' + counter + ')"/></td>' +
+            '<td class="Amount"><span>' + Amount + '</span><input type="text" value="' + Amount + '" style="display:none" readonly id="a-' + counter +'"/></td>' +
+            '<td><a class="Edit" href="javascript:;">Edit</a> | <a class="Update" href="javascript:;" style="display:none">Update</a> | <a class="Cancel" href="javascript:;" style="display:none">Cancel</a>' + '<a class="Delete" href="javascript:;">Delete</a>';
+        '</td></tr>';
+        $("#tblCustomers").append(data);
+        CalculateAmount();
+        CalculateRemainingAmount();
+    };
+    function getAmount(v) {
+        $("#r-" + v).val(isNaN(parseFloat($("#r-" + v).val())) == true ? 1 : parseFloat($("#r-" + v).val()));
+        $("#q-" + v).val(isNaN(parseFloat($("#q-" + v).val())) == true ? 1 : parseFloat($("#q-" + v).val()));
+        var Edit_Rate = $("#r-" + v).val();
+        var Edit_Quantity = $("#q-" + v).val();
+        $("#a-" + v).val(Edit_Rate * Edit_Quantity);
+
+    }
+    $("body").on("click", "#tblCustomers .Edit", function () {
+        var row = $(this).closest("tr");
+        $("td", row).each(function () {
+
+            //if ($(this).find("input").length > 0) {
+
+                $(this).find("input").show();
+                $(this).find("div").show();
+                $(this).find("span").hide();
+            //}
+        });
+        row.find(".Update").show();
+        row.find(".Cancel").show();
+        row.find(".Delete").hide();
+        $(this).hide();
+    });
+
+    //Update event handler.
+    $("body").on("click", "#tblCustomers .Update", function () {
+        var row = $(this).closest("tr");
+        $("td", row).each(function () {
+            if ($(this).find("input").length > 0) {
+                var span = $(this).find("span");
+                var input = $(this).find("input");
+
+                span.html(input.val());
+                span.show();
+                input.hide();
+
+            }
+            else if ($(this).find("div").length > 0) {
+                var e = $(this).find('select#txtName')[0]
+                var span = $(this).find("span");
+                var strName = e.options[e.selectedIndex].text;
+                var div = $(this).find("div").show();
+
+                span.html(strName);
+                span.show();
+
+                div.hide();
+            }
+        });
+        row.find(".Edit").show();
+        row.find(".Delete").show();
+        row.find(".Cancel").hide();
+        $(this).hide();
+         CalculateAmount();
+        CalculateRemainingAmount();
+
+
+        var customer = {};
+        customer.FoodItemId = row.find(".FoodItemId").find("span").html();
+        customer.Name = row.find(".Name").find("span").html();
+        customer.Quantity = row.find(".Quantity").find("span").html();
+        customer.Rate = row.find(".Rate").find("span").html();
+        customer.Amount = row.find(".Amount").find("span").html();
+
+        //$.ajax({
+        //    type: "POST",
+        //    url: "/Home/UpdateCustomer",
+        //    data: '{customer:' + JSON.stringify(customer) + '}',
+        //    contentType: "application/json; charset=utf-8",
+        //    dataType: "json"
+        //});
+    });
+
+    //Cancel event handler.
+    $("body").on("click", "#tblCustomers .Cancel", function () {
+        var row = $(this).closest("tr");
+        $("td", row).each(function () {
+            if ($(this).find("input").length > 0) {
+                var span = $(this).find("span");
+                var input = $(this).find("input");
+                input.val(span.html());
+                span.show();
+                input.hide();
+            }
+            else if ($(this).find("div").length > 0) {
+                var e = $(this).find('select#txtName')[0]
+                var span = $(this).find("span");
+                var strName = e.options[e.selectedIndex].text;
+                var div = $(this).find("div").show();
+
+                span.html(strName);
+                span.show();
+
+                div.hide();
+            }
+        });
+        row.find(".Edit").show();
+        row.find(".Delete").show();
+        row.find(".Update").hide();
+        $(this).hide();
+        CalculateAmount
+    });
+
+
+    $("body").on("click", "#btnSubmit", function () {
+
+        var Sale_FoodItems = [];
+        var myObj = {};
+        var table = document.getElementById("tblCustomers"), sumVal = 0;
+
+
+        if ((table.rows.length) > 0) {
+
+            //for (var i = 1; i < table.rows.length; i++) {
+                for (var i = 1, row; row = table.rows[i]; i++) {
+                    for (var j = 0, col; col = row.cells[j]; j++) {
+                        var column = col;
+                        if (j == 0) {
+                            myObj.Name = $(column).find('span').html();
+                        }
+                        if (j == 1) {
+                            myObj.Rate = $(column).find('span').html();
+                        }
+                        if (j == 2) {
+                            myObj.Quantity = $(column).find('span').html();
+                        }
+                        if (j == 3) {
+                            myObj.Amount = $(column).find('span').html();
+                        }
+
+                    }
+                    Sale_FoodItems.push({ "Name": myObj.Name, "Rate": myObj.Rate, "Quantity": myObj.Quantity, "Amount": myObj.Amount})
+                }
+            }
+
+
+        var CreateSaleViewModel = {};
+        CreateSaleViewModel.Amount = parseFloat($('#TotalAmount').val());
+        CreateSaleViewModel.Amount_Pay = parseFloat($('#AmountPaid').val());
+        CreateSaleViewModel.Customer_Id = parseInt($('#Customer_Id').val());
+        CreateSaleViewModel.Remaining_Amount = parseInt($('#RemainingAmount').val());
+        CreateSaleViewModel.Left_Amount = parseInt($('#LeftAmount').val());
+        CreateSaleViewModel.Grand_Total = parseInt($('#Grand_Total').val());
+        //viewModel.Rate = row.find(".Rate").find("span").html();
+        CreateSaleViewModel.Sale_FoodItems = Sale_FoodItems;
+        //viewModel.Amount = row.find(".Amount").find("span").html();
+        debugger;
+
+
+         $.ajax({
+        type: "POST",
+             url: "/Sales/Create",
+             data: CreateSaleViewModel,
+
+             success: function (msg) {
+
+
+                 location.href = "/Sales/ViewReceipt?Sale_ID="+msg;
+
+
+        },
+        error: function (req, status, error) {
+            alert(error);
+        }
+    });
+
+
+    });
+
+    //Delete event handler.
+    $("body").on("click", "#tblCustomers .Delete", function () {
+        if (confirm("Do you want to delete this row?")) {
+
+            var row = $(this).closest("tr");
+            var FoodItemId = row.find("span").html();
+            row.remove();
+            //if ($("#tblCustomers tr").length > 2) {
+            //    row.remove();
+            //} else {
+            //    row.find(".Edit").hide();
+            //    row.find(".Delete").hide();
+            //    row.find("span").html('&nbsp;');
+            //}
+            CalculateAmount();
+            CalculateRemainingAmount();
+
+            //$.ajax({
+            //    type: "POST",
+            //    url: "/Sales/DeleteCustomer",
+            //    data: '{FoodItemId: ' + FoodItemId + '}',
+            //    contentType: "application/json; charset=utf-8",
+            //    dataType: "json",
+            //    success: function (response) {
+            //        if ($("#tblCustomers tr").length > 2) {
+            //            row.remove();
+            //        } else {
+            //            row.find(".Edit").hide();
+            //            row.find(".Delete").hide();
+            //            row.find("span").html('&nbsp;');
+            //        }
+            //    }
+            //});
+        }
+    });
+    function CalculateAmountForItem(e) {
+
+        //    var $row = $(e).closest("tr");    // Find the row
+        //    var textQuantity = parseInt($row.find(".txtQuantity").text()); // Find the text
+        //var textRate = parseInt($row.find(".txtRate").text()); // Find the text
+        //var textAmount = textQuantity * textRate;
+        //$row.find(".txtQuantity").val(textAmount
+        //); // Find the text
+        //    // Let's test it out
+
+
+    }
+    var onSuccess = function (context) {
+        alert(context);
+    };
+</script>
+

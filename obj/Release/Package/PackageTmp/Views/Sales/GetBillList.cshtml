@@ -1,0 +1,146 @@
+﻿@{
+    ViewData["Title"] = "Get Bill List";
+}
+
+    <script src="~/lib/jquery/jquery.js"></script>
+    <link href="~/Content/bootstrap.css" rel="stylesheet" />
+@section scripts{
+    <link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+
+}
+<style>
+    button.btn.btn-rounded-40.dash-btn-pm {
+        background-color: darkgray;
+        padding: 7px 24px !important;
+        font-size: 12px !important;
+    }
+</style>
+<h1>Sale Bill List</h1>
+<table id="example" class="display" style="width:100%">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Phone Number</th>
+            @*<th>Paid</th>*@
+            <th>Created Date</th>
+            <th>Remaining Amount</th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+
+</table>
+<script>
+    $(document).ready(function () {
+
+
+        debugger;
+        var t = $('#example').DataTable({
+            "aaSorting": [[4, "desc"]],
+            //  dom: '<"row"<"pull-left tbl-search btn-rounded-40"f><"pull-right tbl-search"l>>' + 'rt<"pull-left"i>p',
+            "oLanguage": { "sSearch": "Search" },
+            ajax: {
+                url: "/Sales/GetSales",
+                dataSrc: ""
+            },
+
+            initComplete: function (data) {
+                //this.api().columns('.select-filter').every(function () {
+                //    var column = this;
+                //    var select = $('<select class="form-control"><option value="">Select</option></select>')
+                //        .appendTo($(column.footer()).empty())
+                //        .on('change', function () {
+                //            var val = $.fn.dataTable.util.escapeRegex(
+                //                $(this).val()
+                //            );
+
+                //            column
+                //                .search(val ? '^' + val + '$' : '', true, false)
+                //                .draw();
+                //        });
+
+                //    column.data().unique().sort().each(function (d, j) {
+                //        select.append('<option value="' + d + '">' + d + '</option>')
+                //    });
+                //});
+
+            },
+            //"fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            //    debugger;
+            //    if (aData.eventType == "Night") {
+            //        $('td', nRow).css('background-color', '#6e7171');
+            //        $('td', nRow).css('color', 'white');
+            //    } else if (aData.eventType == "Day") {
+            //        $('td', nRow).css('background-color', '#60a3bc');
+            //    }
+            //},
+            sPlaceHolder: "head:before",
+            columns: [
+                {
+                    data: "name",
+                    width: "10%",
+                    "bSortable": false
+                }, {
+                    data: "phoneNumber",
+                    width: "10%",
+                    "bSortable": false
+                },
+                //{
+                //    data: "isPaid",
+                //    width: "10%",
+                //    "bSortable": false
+                //},
+                {
+                    data: "createdDate",
+                    width: "10%",
+                    "bSortable": false
+                }, {
+                    data: "remaining_Amount",
+                    width: "10%",
+                    "bSortable": false
+                },
+
+
+                {
+                    data: "saleID",
+                    width: "3%",
+                    render: function (data, type, row) {
+                        var form = "<form action='/Sales/ViewSale?id' >";
+                        form += "<input type='hidden' name='id' value='" + row.saleID + "'>";
+                        form += "<div align='center'><button class='btn btn-rounded-40 dash-btn-pm' style='padding: 2px 20px!important;font-size:12px!important;' type='submit' title='Click to view sale detail'>Details</button></div>";
+                        form += "</form>";
+                        return form;
+                    }
+                },
+                {
+                    data: "saleID",
+                    width: "3%",
+                    render: function (data, type, row) {
+                        if (row.canEdit == true) {
+                            var form = "<form action='/Sales/EditSale?id' >";
+                            form += "<input type='hidden' name='id' value='" + row.saleID + "'>";
+                            form += "<div align='center'><button class='btn btn-rounded-40 dash-btn-pm' style='padding: 2px 20px!important;font-size:12px!important;' type='submit' title='Click to view sale detail'>Edit</button></div>";
+                            form += "</form>";
+
+                            return form;
+                        }
+                        else {
+                            var form = "<form >";
+                            form += "<input type='hidden' name='id' value='" + row.saleID + "'>";
+                            form += "<div align='center'><button class='btn btn-rounded-40 dash-btn-pm' style='padding: 2px 20px!important;font-size:12px!important;' type='submit' disabled>Edit</button></div>";
+                            form += "</form>";
+
+                            return form;
+                        }
+                    }
+                },
+
+
+
+            ]
+        });
+        // Automatically add a first row of data
+        $('#addRow').click();
+    });
+</script>

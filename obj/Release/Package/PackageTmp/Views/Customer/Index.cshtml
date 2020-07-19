@@ -1,0 +1,219 @@
+﻿@*@model IEnumerable<POS_Inventory.Models.CustomerViewModel>*@
+
+@{
+    ViewData["Title"] = "Dealers List";
+}
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+<script src="~/Scripts/bootstrap.js"></script>
+@section scripts{
+    <link href="https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css" rel="stylesheet" />
+    <script src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js"></script>
+
+}
+<style>
+    button.btn.btn-rounded-40.dash-btn-pm {
+        background-color: darkgray;
+        padding: 7px 24px !important;
+        font-size: 12px !important;
+    }
+</style>
+<h1>Dealers List</h1>
+
+<p>
+    <a href="/Customer/Create">Create New</a>
+</p>
+@*<table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Address)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Phone_Number)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Shop_Number)
+                </th>
+
+                <th>
+                    @Html.DisplayNameFor(model => model.Created_Date)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Modified_Date)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Address)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Phone_Number)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Shop_Number)
+                    </td>
+
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Created_Date)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Modified_Date)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Customer_Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Customer_Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Customer_Id">Delete</a> |
+                        <a asp-controller="Sales" asp-action="Create" asp-route-id="@item.Customer_Id">Create Sale</a>
+
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>*@
+<table id="example" class="display" style="width:100%">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Phone Number</th>
+            <th>Address</th>
+            <th>Shop Number</th>
+            <th>Remaining Amount</th>
+
+
+            <th></th>
+            <th></th>
+            <th></th>
+        </tr>
+    </thead>
+
+</table>
+<script>
+    $(document).ready(function () {
+
+
+        debugger;
+        var t = $('#example').DataTable({
+            "aaSorting": [[6, "asc"]],
+            //  dom: '<"row"<"pull-left tbl-search btn-rounded-40"f><"pull-right tbl-search"l>>' + 'rt<"pull-left"i>p',
+            "oLanguage": { "sSearch": "Search" },
+            ajax: {
+                url: "/Sales/GetCustomers",
+                dataSrc: ""
+            },
+
+            initComplete: function (data) {
+                //this.api().columns('.select-filter').every(function () {
+                //    var column = this;
+                //    var select = $('<select class="form-control"><option value="">Select</option></select>')
+                //        .appendTo($(column.footer()).empty())
+                //        .on('change', function () {
+                //            var val = $.fn.dataTable.util.escapeRegex(
+                //                $(this).val()
+                //            );
+
+                //            column
+                //                .search(val ? '^' + val + '$' : '', true, false)
+                //                .draw();
+                //        });
+
+                //    column.data().unique().sort().each(function (d, j) {
+                //        select.append('<option value="' + d + '">' + d + '</option>')
+                //    });
+                //});
+
+            },
+            //"fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            //    debugger;
+            //    if (aData.eventType == "Night") {
+            //        $('td', nRow).css('background-color', '#6e7171');
+            //        $('td', nRow).css('color', 'white');
+            //    } else if (aData.eventType == "Day") {
+            //        $('td', nRow).css('background-color', '#60a3bc');
+            //    }
+            //},
+            sPlaceHolder: "head:before",
+            columns: [
+                {
+                    data: "name",
+                    width: "10%",
+                    "bSortable": false
+                }, {
+                    data: "phoneNumber",
+                    width: "10%",
+                    "bSortable": false
+                },
+                {
+                    data: "address",
+                    width: "10%",
+                    //render: function (data) {
+                    //    var date = new Date(data);
+                    //    var d = (date.getDate() < 10 ? '0' : '') + date.getDate();
+                    //    var m = date.getMonth() + 1;
+                    //    var y = date.getFullYear().toString().substr(-2);
+                    //    var months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                    //    return '<span style="display:none">' + data + '</span><span>' + d + "-" + months[parseInt(m, 10) - 1] + "-" + y + '</span>';
+
+                    //}
+                }, {
+                    data: "shopNumber",
+                    width: "10%",
+                    "bSortable": false
+                },
+                {
+                    data: "remaining_Amount",
+                    width: "10%",
+                    "bSortable": false
+                },
+                {
+                    data: "customerId",
+                    width: "3%",
+                    render: function (data, type, row) {
+                        var form = "<form action='/Customer/Edit?id'>";
+                        form += "<input type='hidden' name='id' value='" + row.customerId + "'>";
+                        form += "<div align='center'><button class='btn btn-rounded-40 dash-btn-pm' style='padding: 2px 20px!important;font-size:12px!important;' type='submit'  title='Click to edit customer'>Edit</button></div>";
+                        form += "</form>";
+                        return form;
+                    }
+                },
+
+                {
+                    data: "customerId",
+                    width: "3%",
+                    render: function (data, type, row) {
+                        var form = "<form action='/Customer/Details?id' >";
+                        form += "<input type='hidden' name='id' value='" + row.customerId + "'>";
+                        form += "<div align='center'><button class='btn btn-rounded-40 dash-btn-pm' style='padding: 2px 20px!important;font-size:12px!important;' type='submit' title='Click to view customer detail'>Details</button></div>";
+                        form += "</form>";
+                        return form;
+                    }
+                },
+                {
+                    data: "customerId",
+                    width: "3%",
+                    render: function (data, type, row) {
+                        var form = "<form action='/Sales/Create'>";
+                        form += "<input type='hidden' name='id' value='" + row.customerId + "'>";
+                        form += "<div align='center'><button class='btn btn-rounded-40 dash-btn-pm' style='padding: 2px 20px!important;font-size:12px!important;' type='submit' title='Click to add new sale'>Add Sale</button></div>";
+                        form += "</form>";
+                        return form;
+                    }
+                }
+
+            ]
+        });
+        // Automatically add a first row of data
+        $('#addRow').click();
+    });
+</script>

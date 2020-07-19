@@ -1,0 +1,77 @@
+﻿@model POS_Inventory.Models.Customer
+
+@{
+    ViewData["Title"] = "Create Dealer";
+}
+
+
+
+<h4>Create Dealer</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+
+                <label class="control-label">Name</label>
+                @Html.TextBoxFor(m=>m.Name,new { @class= "form-control",@required="required" })
+                @*<input asp-for="Name" class="form-control" required />*@
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+
+                <label class="control-label">Phone Number</label>
+                @Html.TextBoxFor(m => m.Phone_Number, new { @class = "form-control", @required = "required" })
+              
+                <span asp-validation-for="Phone_Number" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+
+                <label class="control-label">Address</label>
+                @Html.TextBoxFor(m => m.Address, new { @class = "form-control"})
+              
+                <span asp-validation-for="Address" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label class="control-label">Shop Number</label>
+                @Html.TextBoxFor(m => m.Shop_Number, new { @class = "form-control" })
+
+              
+                <span asp-validation-for="Shop_Number" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Remaining Amount</label>
+                @Html.TextBoxFor(m => m.Remaining_Amount, new { @class = "form-control" })
+
+               
+                <span asp-validation-for="Remaining_Amount" class="text-danger"></span>
+            </div>
+           
+            @*<div class="form-group form-check">
+            <label class="form-check-label">
+                <input class="form-check-input" asp-for="Is_Deleted" /> @Html.DisplayNameFor(model => model.Is_Deleted)
+            </label>
+        </div>
+        <div class="form-group">
+            <label asp-for="Created_Date" class="control-label"></label>
+            <input asp-for="Created_Date" class="form-control" />
+            <span asp-validation-for="Created_Date" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Modified_Date" class="control-label"></label>
+            <input asp-for="Modified_Date" class="form-control" />
+            <span asp-validation-for="Modified_Date" class="text-danger"></span>
+        </div>*@
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
